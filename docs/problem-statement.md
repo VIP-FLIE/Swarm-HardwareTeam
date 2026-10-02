@@ -43,10 +43,8 @@ The club has two sub-teams:
 
 | Constraint | Detail |
 |---|---|
-| **Budget** | Target under ~$1,500 for the first fleet of 3 small drones (includes spares; crashes are expected) |
 | **Autopilot** | PX4 (drives flight-controller and companion-computer choices) |
 | **Build approach** | Off-the-shelf parts for MVP; custom hardware is a later phase |
-| **Flight environment** | Indoor first, outdoor campus eventually |
 | **Experience** | Team is new to drones; onboarding material is a deliverable, not a nice-to-have |
 | **Longevity** | Multi-semester; documentation must survive member turnover |
  find it.
