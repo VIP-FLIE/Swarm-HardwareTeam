@@ -9,20 +9,8 @@
 
 What parameters must the team weigh when choosing a frame for a small fleet (~3) of PX4 drones, and how does each one affect the downstream component choices (T-03 motors/props, T-05 flight controller, T-11 dependency map)?
 
-## Short answer
-
-This document does **not** recommend a frame. The team makes that decision. It lays out the decision space: 10 parameters (section 1), how they interact (section 2), and the facts each depends on, with sources.
-
-Four points shape the rest:
-
-1. **Payload decides frame size.** Two scenarios were requested: (A) companion computer plus vision sensors, and (B) minimal sensors, RC-style. A companion computer and vision stack adds roughly 50–200 g and needs real volume, which pushes toward ~0.5 m-class frames. Scenario B fits much smaller frames.
-2. **Rotor count and layout are mostly settled by PX4.** PX4 supports many layouts, but a standard quad X is the least complicated option. More rotors cost efficiency or complexity, and PX4 does not automatically recover from a motor failure.
-3. **Material is a trade between stiffness, crash behavior and RF/electrical effects.** Carbon fiber is stiff and light but brittle and conductive. Printed nylon/PETG is tougher in crashes and RF-transparent but heavier and less stiff.
-4. **Frame decisions hand hard numbers to other tasks.** Examples are the FC mounting pattern, all-up weight (AUW) and prop size. Fix them early.
 
 ## Findings
-
-Citations like [3] refer to the Sources table. Items marked *(secondary)* come from vendor or blog pages, not primary documentation, and should be verified before they drive a purchase.
 
 ### 1. Parameters
 
@@ -78,10 +66,6 @@ PX4 supports tri-, quad-, hexa-, octo- and larger multicopters in several geomet
 |---|---|---|
 | Quad (X) | Simplest, cheapest, most frames/parts, matches PX4 defaults and the X500 sim model [1][2][7] | A single motor/ESC failure means loss of control *(secondary)* [20] |
 | Quad H / wide / + | Different arm geometry, e.g., camera clearance | Different tuning/airframe selection [2] |
-| Hex | Extra thrust margin, can survive a motor loss in principle *(secondary)* [20] | PX4 has no built-in logic to detect and compensate a failed multicopter motor, so redundancy is not automatic [20]. More cost and weight. |
-| Coaxial (X8 / octo coax) | More thrust in a compact footprint | Lower rotor loses thrust in the upper rotor's wash: co-axial rotors ~22% less efficient than two separate rotors [19]; coaxial octocopter ~12–14% thrust loss vs conventional [19] |
-
-For the stated scope (3 drones, new team), the added complexity of more than four rotors needs a concrete reason such as lifting scenario A's payload.
 
 #### 1.5 Propeller protection and ducting (indoor safety)
 
@@ -123,22 +107,11 @@ Design considerations:
 - **Plate spacing and stack height** (X500 v2: 28 mm between plates) must fit the FC stack, ESCs and companion computer [8].
 - **Battery:** keep close to the center of gravity; use a strap or tray with adjustable position *(secondary)* [25].
 - **FC at the CoG** [3][25].
-- **Sensor sightlines:** the rangefinder points down; flow modules sit near the vehicle center or need configured offsets and yaw orientation (SENS_FLOW_ROT) [6]. Optical flow modules emit EM radiation and should sit away from GPS/other electronics [6].
+- **Sensor sightlines:** the rangefinder points down; flow modules sit near the vehicle center or need configured offsets and yaw orientation [6]. Optical flow modules emit EM radiation and should sit away from GPS/other electronics [6].
 - **GPS and compass:** carbon structures and motor wires can interfere. Use a mast or keep clear *(secondary)* [12]. Note ModalAI says GPS does not work on the Starling due to EM interference, so it relies on VIO indoors [9].
 - **Cable routing, battery-swap access, props clearance, landing gear height.**
 - **Mounting options** for scenario A: dedicated companion plate and camera mounts, as on the X500 v2 [8].
 
-
-#### 1.10 Fabrication route: COTS vs. in-house
-
-| | Buy COTS frame | 3D-print / laser-cut in-house |
-|---|---|---|
-| Speed to first flight | Fast | Slower: design, print, iterate |
-| Spares | Per-arm or per-plate replacement parts, subject to availability | Reprint on demand, cheap |
-| Performance | Proven geometry (e.g., X500 v2 is a PX4 dev kit [8]) | Heavier/less stiff than CF [12][13]; needs print-parameter discipline [16] |
-| Long-term goal | Pick an open or well-documented design that could later be cloned | Aligns with the custom-frame goal [problem statement] |
-
-Hybrid options: COTS carbon plates with printed arms/mounts/guards, which also fits the printed-fittings approach in [8].
 
 ### 2. How the parameters interact
 
@@ -147,7 +120,7 @@ Hybrid options: COTS carbon plates with printed arms/mounts/guards, which also f
 | Payload scenario (1.1) | AUW (1.2) → size class (1.3) → motor/prop (T-03) → battery/ESC |
 | Size class (1.3) | Prop guard options (1.5) |
 | Rotor count (1.4) | Motor/ESC count, power distribution, airframe preset in PX4 |
-| Material (1.6) and route (1.10) | Weight, stiffness/vibration (1.7), GPS/compass placement (1.9), repairability |
+| Material (1.6) | Weight, stiffness/vibration (1.7), GPS/compass placement (1.9), repairability |
 | FC mounting pattern (1.8) | T-05 FC choice |
 | Layout (1.9) | Sensor performance, CoG, simulation model parameters |
 
